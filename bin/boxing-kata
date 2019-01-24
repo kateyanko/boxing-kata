@@ -20,27 +20,12 @@ Boxing::Kata::report
 # green: 2
 # pink: 1
 
-
-# Require the CSV and JSON libraries from the Standard Library.
 require "csv" 
 require "json"  
 
-#Import CSV file all at once, converting data into an array of hashes for use. 
-#We specify:
-# Encoding because we want our data to be in UTF-8
-# Headers beacuse we want a key, value hash with the headers
-# Header_converters because we want headers to be symbols
-# Converters because we want all of our data in the right format, integers, strings etc…
 data = CSV.read("../spec/fixtures/family_preferences.csv", { encoding: "UTF-8", headers: true, header_converters: :symbol, converters: :all})
 
 hashed_data = data.map { |d| d.to_hash }
-
-#To test whether CSV is imported, we use: p hashed_data
-
-#declare a function and iterate until the array is completed, printing the # of brushes in each color. 
-
-# p hashed_data.map {|x| x.keys}.uniq
-# prints [[:id, :name, :brush_color, :primary_insured_id, :contract_effective_date], [:id, :name, :brush_color, :primary_insured_id, :contract_effective_date, nil]]
 
 colors = hashed_data.map {|x| x.values[2]}
 
@@ -59,3 +44,52 @@ p "BRUSH PREFERENCES"
 p "blue: " + blue.to_s
 p "pink: " + pink.to_s
 p "green: " + green.to_s
+
+# **Starter boxes**
+
+# _As a Beam Shipping Manager_<br>
+# _In order to ship perks_<br>
+# _I want to fill starter boxes_<br>
+
+# Now that member data has been imported the shipping manager can begin filling boxes. A family should receive starter boxes with a brush and replacement brush head for each of their preferred colors. Each member will receive one brush and one replacement head. A starter box can contain a maximum of 2 brushes and 2 replacement heads in any combination of colors. When the shipping manager presses the starter boxes button then a number of boxes are output.  Using the brush preferences example above box output will be generated in the following format:
+
+
+#Print blue starter boxes
+until blue <= 2
+  puts "STARTER BOX"
+  puts "2 blue brushes"
+  puts  "2 blue replacement heads"
+  blue -= 2
+end
+
+puts "STARTER BOX"
+puts blue.to_s + " blue brushes"
+puts  blue.to_s + " blue replacement heads"
+
+#Print green starter boxes
+until green <= 2
+  puts "STARTER BOX"
+  puts "2 green brushes"
+  puts  "2 green replacement heads"
+  green -= 2
+end
+
+puts "STARTER BOX"
+puts green.to_s + " green brushes"
+puts  green.to_s + " green replacement heads"
+
+#Print pink starter boxes
+until pink <= 2
+  puts "STARTER BOX"
+  puts "2 pink brushes"
+  puts  "2 pink replacement heads"
+  pink -= 2
+end
+
+puts "STARTER BOX"
+puts pink.to_s + " pink brushes"
+puts  pink.to_s + " pink replacement heads"
+
+if colors.count.to_i < 1
+  puts "NO STARTER BOXES GENERATED"
+end
