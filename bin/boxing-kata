@@ -1,0 +1,61 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "boxing/kata/boxing_kata"
+
+Boxing::Kata::report
+
+
+# **Importing family preferences**
+
+# _As a Beam Shipping Manager_<br>
+# _In order to ship perks_<br>
+# _I want to add family member brush preferences_<br>
+
+# To begin the boxing process the shipping manager must import family data.  When the system receives the input file then the brush color counts will be displayed in the format below.
+
+# ```
+# BRUSH PREFERENCES
+# blue: 2
+# green: 2
+# pink: 1
+
+
+# Require the CSV and JSON libraries from the Standard Library.
+require "csv" 
+require "json"  
+
+#Import CSV file all at once, converting data into an array of hashes for use. 
+#We specify:
+# Encoding because we want our data to be in UTF-8
+# Headers beacuse we want a key, value hash with the headers
+# Header_converters because we want headers to be symbols
+# Converters because we want all of our data in the right format, integers, strings etc…
+data = CSV.read("../spec/fixtures/family_preferences.csv", { encoding: "UTF-8", headers: true, header_converters: :symbol, converters: :all})
+
+hashed_data = data.map { |d| d.to_hash }
+
+#To test whether CSV is imported, we use: p hashed_data
+
+#declare a function and iterate until the array is completed, printing the # of brushes in each color. 
+
+# p hashed_data.map {|x| x.keys}.uniq
+# prints [[:id, :name, :brush_color, :primary_insured_id, :contract_effective_date], [:id, :name, :brush_color, :primary_insured_id, :contract_effective_date, nil]]
+
+colors = hashed_data.map {|x| x.values[2]}
+
+colors_frequency_hash = {}
+
+colors.each do |x|
+    count = colors.count(x)
+    colors_frequency_hash[x] = count  
+  end
+
+blue = colors_frequency_hash["blue"]
+pink = colors_frequency_hash["pink"]
+green = colors_frequency_hash["green"]
+
+p "BRUSH PREFERENCES"
+p "blue: " + blue.to_s
+p "pink: " + pink.to_s
+p "green: " + green.to_s
