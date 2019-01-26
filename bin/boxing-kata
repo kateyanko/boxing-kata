@@ -29,21 +29,22 @@ hashed_data = data.map { |d| d.to_hash }
 
 colors = hashed_data.map {|x| x.values[2]}
 
-colors_frequency_hash = {}
+$colors_frequency_hash = {}
 
 colors.each do |x|
     count = colors.count(x)
-    colors_frequency_hash[x] = count  
+    $colors_frequency_hash[x] = count  
   end
 
-blue = colors_frequency_hash["blue"]
-pink = colors_frequency_hash["pink"]
-green = colors_frequency_hash["green"]
+$blue = $colors_frequency_hash["blue"]
+$pink = $colors_frequency_hash["pink"]
+$green = $colors_frequency_hash["green"]
+$done1 = 1
 
-p "BRUSH PREFERENCES"
-p "blue: " + blue.to_s
-p "pink: " + pink.to_s
-p "green: " + green.to_s
+# p "BRUSH PREFERENCES"
+# p "blue: " + $blue.to_s
+# p "pink: " + $pink.to_s
+# p "green: " + $green.to_s
 
 # **Starter boxes**
 
@@ -52,44 +53,206 @@ p "green: " + green.to_s
 # _I want to fill starter boxes_<br>
 
 # Now that member data has been imported the shipping manager can begin filling boxes. A family should receive starter boxes with a brush and replacement brush head for each of their preferred colors. Each member will receive one brush and one replacement head. A starter box can contain a maximum of 2 brushes and 2 replacement heads in any combination of colors. When the shipping manager presses the starter boxes button then a number of boxes are output.  Using the brush preferences example above box output will be generated in the following format:
+#Print blue starter boxes
 
+def print_starter_boxes
 
 #Print blue starter boxes
-until blue <= 2
+until $blue <= 2
   puts "STARTER BOX"
   puts "2 blue brushes"
   puts  "2 blue replacement heads"
-  blue -= 2
+  $blue -= 2
 end
 
 puts "STARTER BOX"
-puts blue.to_s + " blue brushes"
-puts  blue.to_s + " blue replacement heads"
+puts $blue.to_s + " blue brushes"
+puts  $blue.to_s + " blue replacement heads"
 
 #Print green starter boxes
-until green <= 2
+until $green <= 2
   puts "STARTER BOX"
   puts "2 green brushes"
   puts  "2 green replacement heads"
-  green -= 2
+  $green -= 2
 end
 
 puts "STARTER BOX"
-puts green.to_s + " green brushes"
-puts  green.to_s + " green replacement heads"
+puts $green.to_s + " green brushes"
+puts  $green.to_s + " green replacement heads"
 
 #Print pink starter boxes
-until pink <= 2
+until $pink <= 2
   puts "STARTER BOX"
   puts "2 pink brushes"
   puts  "2 pink replacement heads"
-  pink -= 2
+  $pink -= 2
 end
 
 puts "STARTER BOX"
-puts pink.to_s + " pink brushes"
-puts  pink.to_s + " pink replacement heads"
+puts $pink.to_s + " pink brushes"
+puts  $pink.to_s + " pink replacement heads"
+
+#Set variable equal to 1 for reference that this step is complete for the shipping manager.
+$done1 = 1
+
+end
+
+# print_starter_boxes
+
+#Print error for shipping manager if no starter boxes can be generated.
 
 if colors.count.to_i < 1
   puts "NO STARTER BOXES GENERATED"
 end
+
+
+# **Refills**
+
+# _Aa a Beam Shipping Manager_<br>
+# _In order to ship perks_<br>
+# _I want to fill refill boxes_<br>
+
+# A family should receive refill boxes with a replacement brush head for each of their preferred colors. A refill box can contain a maximum of 4 replacement heads. when the shipping manager presses the refill boxes button then a number of refill boxes are output.  Using the brush preferences example above box output will be generated in the following format:
+
+# ```
+# REFILL BOX
+# 2 blue replacement heads
+# 2 green replacement heads
+
+# REFILL BOX
+# 1 pink replacement head
+# ```
+
+# # If no starter boxes have been generated then output the message `PLEASE GENERATE STARTER BOXES FIRST`.
+
+
+# $blue_replacement = $colors_frequency_hash["blue"]
+# $pink_replacement = $colors_frequency_hash["pink"]
+# $green_replacement = $colors_frequency_hash["green"]
+
+$blue_replacement = 9
+$pink_replacement = 7
+$green_replacement = 7
+
+$replacement_colors = $blue_replacement.to_i + $pink_replacement.to_i + $green_replacement.to_i
+
+
+
+def refill #may want to rename this 
+  if $done1 == 0 
+    #Go back to starter process. Cannot refill boxes yet. 
+  puts "PLEASE GENERATE STARTER BOXES FIRST"
+  
+  else
+    #Start the refill process. 
+    refill_box
+  end
+end
+
+def refill_box
+  #If you have only 4 or less replacement heads, you can fill a box and the work is complete.
+  if $replacement_colors <= 4
+    puts "REFILL BOX"
+    puts $pink_replacement.to_s + " pink replacement heads"
+    puts  $green_replacement.to_s + " green replacement heads"
+    puts  $blue_replacement.to_s + " blue replacement heads"
+  else 
+    #If you have more than 4, we will need to figure out how these boxes should be arranged. 
+    multiple_boxes
+
+end
+end
+#rememeber to change done1 to 0 when you're done!
+
+
+def multiple_boxes #rename this to "pack replacement boxes"
+  while $pink_replacement.to_i >= 4
+    puts "REFILL BOX"
+    puts "4 pink replacement heads"
+    $pink_replacement -= 4
+  end
+
+  $pink_leftover = $pink_replacement
+
+  while $green_replacement.to_i >= 4
+    puts "REFILL BOX"
+    puts "4 green replacement heads"
+    $green_replacement -= 4
+  end
+    $green_leftover = $green_replacement
+  while $blue_replacement.to_i >= 4
+    puts "REFILL BOX"
+    puts "4 blue replacement heads"
+    $blue_replacement -= 4
+  end
+    $blue_leftover = $blue_replacement
+  
+end
+
+$leftovers = {blue: $blue_leftover, pink: $pink_leftover, green: $green_leftover}
+multiple_boxes
+
+def leftover_boxes
+  
+  $box_capacity  = 4
+
+  if $blue_leftover < 4 && $blue_leftover != 0
+    puts "REFILL BOX"
+    puts $blue_leftover.to_s + " blue replacement heads"
+    $box_capacity = $box_capacity - $blue_leftover
+    $blue_leftover = 0
+
+
+
+    if $leftovers != 0 && $box_capacity != 0 
+        if $green_leftover < $box_capacity
+          puts $green_leftover.to_s + " green replacement heads"
+          $box_capacity = $box_capacity - $green_leftover
+          $green_leftover = 0
+          if $box_capacity != 0 
+            if $pink_leftover < $box_capacity
+              puts $pink_leftover.to_s + " pink replacement heads"
+              $box_capacity = $box_capacity - $pink_leftover
+              $pink_leftover = 0
+            end
+          else 
+            leftover_boxes
+          end
+        else
+          puts $box_capacity.to_s + " green replacement heads"
+          leftover_boxes
+        end
+      end
+    end
+
+  if $green_leftover < 4 && $green_leftover != 0
+    puts "REFILL BOX"
+          puts $green_leftover.to_s + " green replacement heads"
+          $box_capacity = $box_capacity - $green_leftover
+          $green_leftover = 0
+          if $leftovers != 0 && $box_capacity != 0 
+              if $pink_leftover < $box_capacity
+                puts $pink_leftover.to_s + " pink replacement heads"
+                $box_capacity = $box_capacity - $pink_leftover
+                $pink_leftover = 0
+              else 
+                puts $box_capacity.to_s + " pink replacement heads"
+                $pink_leftover = $pink_leftover - $box_capacity
+                leftover_boxes
+              end
+            end
+          end
+    
+if $pink_leftover < 4 && $pink_leftover != 0
+puts "REFILL BOX"
+  puts $pink_leftover.to_s + " pink replacement heads"
+  $pink_leftover = 0
+end
+end
+
+
+if $leftovers != 0 
+  leftover_boxes
+end
+
