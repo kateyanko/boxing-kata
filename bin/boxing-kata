@@ -57,7 +57,6 @@ $done1 = 1
 
 def print_starter_boxes
 
-#Print blue starter boxes
 until $blue <= 2
   puts "STARTER BOX"
   puts "2 blue brushes"
@@ -69,7 +68,6 @@ puts "STARTER BOX"
 puts $blue.to_s + " blue brushes"
 puts  $blue.to_s + " blue replacement heads"
 
-#Print green starter boxes
 until $green <= 2
   puts "STARTER BOX"
   puts "2 green brushes"
@@ -81,7 +79,6 @@ puts "STARTER BOX"
 puts $green.to_s + " green brushes"
 puts  $green.to_s + " green replacement heads"
 
-#Print pink starter boxes
 until $pink <= 2
   puts "STARTER BOX"
   puts "2 pink brushes"
@@ -93,14 +90,10 @@ puts "STARTER BOX"
 puts $pink.to_s + " pink brushes"
 puts  $pink.to_s + " pink replacement heads"
 
-#Set variable equal to 1 for reference that this step is complete for the shipping manager.
 $done1 = 1
-
 end
 
 # print_starter_boxes
-
-#Print error for shipping manager if no starter boxes can be generated.
 
 if colors.count.to_i < 1
   puts "NO STARTER BOXES GENERATED"
@@ -126,47 +119,35 @@ end
 
 # # If no starter boxes have been generated then output the message `PLEASE GENERATE STARTER BOXES FIRST`.
 
-
-# $blue_replacement = $colors_frequency_hash["blue"]
-# $pink_replacement = $colors_frequency_hash["pink"]
-# $green_replacement = $colors_frequency_hash["green"]
-
-$blue_replacement = 9
-$pink_replacement = 7
-$green_replacement = 7
+$blue_replacement = $colors_frequency_hash["blue"]
+$pink_replacement = $colors_frequency_hash["pink"]
+$green_replacement = $colors_frequency_hash["green"]
 
 $replacement_colors = $blue_replacement.to_i + $pink_replacement.to_i + $green_replacement.to_i
 
-
-
-def refill #may want to rename this 
-  if $done1 == 0 
-    #Go back to starter process. Cannot refill boxes yet. 
+def check_for_starter_boxes 
+  if $done1 == 0
   puts "PLEASE GENERATE STARTER BOXES FIRST"
-  
-  else
-    #Start the refill process. 
-    refill_box
+  else 
+    pack_refill_boxes
   end
 end
 
-def refill_box
-  #If you have only 4 or less replacement heads, you can fill a box and the work is complete.
+def pack_refill_boxes
   if $replacement_colors <= 4
     puts "REFILL BOX"
     puts $pink_replacement.to_s + " pink replacement heads"
     puts  $green_replacement.to_s + " green replacement heads"
     puts  $blue_replacement.to_s + " blue replacement heads"
   else 
-    #If you have more than 4, we will need to figure out how these boxes should be arranged. 
-    multiple_boxes
+    pack_multiple_refill_boxes
 
 end
 end
 #rememeber to change done1 to 0 when you're done!
 
 
-def multiple_boxes #rename this to "pack replacement boxes"
+def pack_multiple_refill_boxes 
   while $pink_replacement.to_i >= 4
     puts "REFILL BOX"
     puts "4 pink replacement heads"
@@ -191,7 +172,8 @@ def multiple_boxes #rename this to "pack replacement boxes"
 end
 
 $leftovers = {blue: $blue_leftover, pink: $pink_leftover, green: $green_leftover}
-multiple_boxes
+
+pack_multiple_refill_boxes
 
 def leftover_boxes
   
@@ -202,8 +184,6 @@ def leftover_boxes
     puts $blue_leftover.to_s + " blue replacement heads"
     $box_capacity = $box_capacity - $blue_leftover
     $blue_leftover = 0
-
-
 
     if $leftovers != 0 && $box_capacity != 0 
         if $green_leftover < $box_capacity
@@ -221,6 +201,7 @@ def leftover_boxes
           end
         else
           puts $box_capacity.to_s + " green replacement heads"
+          $green_leftover = $green_leftover - $box_capacity
           leftover_boxes
         end
       end
@@ -256,3 +237,24 @@ if $leftovers != 0
   leftover_boxes
 end
 
+**Scheduling**
+
+_As a Beam Shipping Manager_<br>
+_In order to ship perks_<br>
+_I want to schedule boxes for shipping_<br>
+
+Members should receive perks throughout the length of the contract (1 year).  The shipping date is based on the contract effective date of the primary insured family member.  Starter boxes should be scheduled on the contract effective date.  Refills are scheduled every 90 days after that for the remainder of the year. When boxes are generated then each box should have a line appended with its schedule.
+
+Example for a starter box:
+```
+STARTER BOX
+2 green brushes
+2 green replacement head
+Schedule: 2018-01-01
+```
+
+Example for a refill box:
+```
+REFILL BOX
+1 pink replacement head
+Schedule: 2018-04-01, 2018-06-30, 2018-09-28
