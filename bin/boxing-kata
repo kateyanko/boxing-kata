@@ -81,6 +81,7 @@ until $blue <= 2
   puts "2 blue brushes"
   puts  "2 blue replacement heads"
   $blue -= 2
+  puts "2 paste kits"
   puts $primary_contract_date.strftime("%Y-%m-%d")
   puts "Mail class: priority"
 end
@@ -88,6 +89,7 @@ end
 puts "STARTER BOX"
 puts $blue.to_s + " blue brushes"
 puts  $blue.to_s + " blue replacement heads"
+puts $blue.to_s + " paste kit(s)"
 puts $primary_contract_date.strftime("%Y-%m-%d")
 if $blue.to_i < 2
   puts "Mail class: first"
@@ -100,6 +102,7 @@ until $green <= 2
   puts "2 green brushes"
   puts  "2 green replacement heads"
   $green -= 2
+  puts "2 paste kits"
   puts $primary_contract_date.strftime("%Y-%m-%d")
   puts "Mail class: priority"
 end
@@ -107,6 +110,7 @@ end
 puts "STARTER BOX"
 puts $green.to_s + " green brushes"
 puts  $green.to_s + " green replacement heads"
+puts $green.to_s + " paste kit(s)"
 puts $primary_contract_date.strftime("%Y-%m-%d")
 if $green.to_i < 2
   puts "Mail class: first"
@@ -118,6 +122,7 @@ until $pink <= 2
   puts "STARTER BOX"
   puts "2 pink brushes"
   puts  "2 pink replacement heads"
+  puts "2 paste kits"
   $pink -= 2
   puts $primary_contract_date.strftime("%Y-%m-%d")
   puts "Mail class: priority"
@@ -126,6 +131,7 @@ end
 puts "STARTER BOX"
 puts $pink.to_s + " pink brushes"
 puts  $pink.to_s + " pink replacement heads"
+puts $pink.to_s + " paste kit(s)"
 puts $primary_contract_date.strftime("%Y-%m-%d")
 if $pink.to_i < 2
   puts "Mail class: first"
@@ -164,6 +170,7 @@ def pack_refill_boxes
     puts $pink_replacement.to_s + " pink replacement heads"
     puts  $green_replacement.to_s + " green replacement heads"
     puts  $blue_replacement.to_s + " blue replacement heads"
+    puts $replacement_colors.to_s + " paste kit(s)"
     scheduling_dates
     puts "Mail class: first"
   else 
@@ -177,6 +184,7 @@ def pack_multiple_refill_boxes
   while $pink_replacement.to_i >= 4
     puts "REFILL BOX"
     puts "4 pink replacement heads"
+    puts $pink_replacement.to_s + " paste kit(s)"
     $pink_replacement -= 4
     scheduling_dates
     puts "Mail class: first"
@@ -187,6 +195,7 @@ def pack_multiple_refill_boxes
   while $green_replacement.to_i >= 4
     puts "REFILL BOX"
     puts "4 green replacement heads"
+    puts $green_replacement.to_s + " paste kit(s)"
     $green_replacement -= 4
     scheduling_dates
     puts "Mail class: first"
@@ -195,6 +204,7 @@ def pack_multiple_refill_boxes
   while $blue_replacement.to_i >= 4
     puts "REFILL BOX"
     puts "4 blue replacement heads"
+    puts $blue_replacement.to_s + " paste kit(s)"
     $blue_replacement -= 4
     scheduling_dates
     puts "Mail class: first"
@@ -207,9 +217,13 @@ end
 
 $leftovers = {blue: $blue_leftover, pink: $pink_leftover, green: $green_leftover}
 
+# YO. YOU ARE HERE
+# PASTE KITS WORKS FOR EVERYTHING BUT LEFTOVER BOXES 
+
 def leftover_boxes
   
   $box_capacity  = 4
+
 
   if $blue_leftover < 4 && $blue_leftover != 0
     puts "REFILL BOX"
