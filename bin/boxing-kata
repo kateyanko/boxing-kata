@@ -34,7 +34,20 @@ for i in $contract_date do
     $primary_contract_date = i
   end
 end
-puts $primary_contract_date.strftime("%Y-%m-%d")
+
+def scheduling_dates
+  for i in 1..3 do
+  $primary_contract_date += 90
+  if i < 3
+  print $primary_contract_date.strftime("%Y-%m-%d, ")
+  else
+    print $primary_contract_date.strftime("%Y-%m-%d\n")
+
+end
+end
+$primary_contract_date -= 270
+end
+
 
 colors = hashed_data.map {|x| x.values[2]}
 
@@ -48,12 +61,16 @@ colors.each do |x|
 $blue = $colors_frequency_hash["blue"]
 $pink = $colors_frequency_hash["pink"]
 $green = $colors_frequency_hash["green"]
-$done1 = 1
+$done1 = 0
 
-# p "BRUSH PREFERENCES"
-# p "blue: " + $blue.to_s
-# p "pink: " + $pink.to_s
-# p "green: " + $green.to_s
+def import_preferences
+p "BRUSH PREFERENCES"
+p "blue: " + $blue.to_s
+p "pink: " + $pink.to_s
+p "green: " + $green.to_s
+end
+
+import_preferences
 
 # **Starter boxes**
 
@@ -65,12 +82,18 @@ until $blue <= 2
   puts  "2 blue replacement heads"
   $blue -= 2
   puts $primary_contract_date.strftime("%Y-%m-%d")
+  puts "Mail class: priority"
 end
 
 puts "STARTER BOX"
 puts $blue.to_s + " blue brushes"
 puts  $blue.to_s + " blue replacement heads"
 puts $primary_contract_date.strftime("%Y-%m-%d")
+if $blue.to_i < 2
+  puts "Mail class: first"
+else
+  puts "Mail class: priority"
+end
 
 until $green <= 2
   puts "STARTER BOX"
@@ -78,12 +101,18 @@ until $green <= 2
   puts  "2 green replacement heads"
   $green -= 2
   puts $primary_contract_date.strftime("%Y-%m-%d")
+  puts "Mail class: priority"
 end
 
 puts "STARTER BOX"
 puts $green.to_s + " green brushes"
 puts  $green.to_s + " green replacement heads"
 puts $primary_contract_date.strftime("%Y-%m-%d")
+if $green.to_i < 2
+  puts "Mail class: first"
+else
+  puts "Mail class: priority"
+end
 
 until $pink <= 2
   puts "STARTER BOX"
@@ -91,17 +120,22 @@ until $pink <= 2
   puts  "2 pink replacement heads"
   $pink -= 2
   puts $primary_contract_date.strftime("%Y-%m-%d")
+  puts "Mail class: priority"
 end
 
 puts "STARTER BOX"
 puts $pink.to_s + " pink brushes"
 puts  $pink.to_s + " pink replacement heads"
 puts $primary_contract_date.strftime("%Y-%m-%d")
-
+if $pink.to_i < 2
+  puts "Mail class: first"
+else
+  puts "Mail class: priority"
+end
 $done1 = 1
 end
 
-# print_starter_boxes
+print_starter_boxes
 
 if colors.count.to_i < 1
   puts "NO STARTER BOXES GENERATED"
@@ -130,12 +164,13 @@ def pack_refill_boxes
     puts $pink_replacement.to_s + " pink replacement heads"
     puts  $green_replacement.to_s + " green replacement heads"
     puts  $blue_replacement.to_s + " blue replacement heads"
+    scheduling_dates
+    puts "Mail class: first"
   else 
     pack_multiple_refill_boxes
 
 end
 end
-#rememeber to change done1 to 0 when you're done!
 
 
 def pack_multiple_refill_boxes 
@@ -143,6 +178,8 @@ def pack_multiple_refill_boxes
     puts "REFILL BOX"
     puts "4 pink replacement heads"
     $pink_replacement -= 4
+    scheduling_dates
+    puts "Mail class: first"
   end
 
   $pink_leftover = $pink_replacement
@@ -151,12 +188,16 @@ def pack_multiple_refill_boxes
     puts "REFILL BOX"
     puts "4 green replacement heads"
     $green_replacement -= 4
+    scheduling_dates
+    puts "Mail class: first"
   end
     $green_leftover = $green_replacement
   while $blue_replacement.to_i >= 4
     puts "REFILL BOX"
     puts "4 blue replacement heads"
     $blue_replacement -= 4
+    scheduling_dates
+    puts "Mail class: first"
   end
     $blue_leftover = $blue_replacement
 if $leftovers != 0 
@@ -181,11 +222,14 @@ def leftover_boxes
           puts $green_leftover.to_s + " green replacement heads"
           $box_capacity = $box_capacity - $green_leftover
           $green_leftover = 0
+          
           if $box_capacity != 0 
             if $pink_leftover < $box_capacity
               puts $pink_leftover.to_s + " pink replacement heads"
               $box_capacity = $box_capacity - $pink_leftover
               $pink_leftover = 0
+              scheduling_dates
+              puts "Mail class: first"
             end
           else 
             leftover_boxes
@@ -193,6 +237,8 @@ def leftover_boxes
         else
           puts $box_capacity.to_s + " green replacement heads"
           $green_leftover = $green_leftover - $box_capacity
+          scheduling_dates
+          puts "Mail class: first"
           leftover_boxes
         end
       end
@@ -203,11 +249,15 @@ def leftover_boxes
           puts $green_leftover.to_s + " green replacement heads"
           $box_capacity = $box_capacity - $green_leftover
           $green_leftover = 0
+          scheduling_dates
+          puts "Mail class: first"
           if $leftovers != 0 && $box_capacity != 0 
               if $pink_leftover < $box_capacity
                 puts $pink_leftover.to_s + " pink replacement heads"
                 $box_capacity = $box_capacity - $pink_leftover
                 $pink_leftover = 0
+                scheduling_dates
+                puts "Mail class: first"
               else 
                 puts $box_capacity.to_s + " pink replacement heads"
                 $pink_leftover = $pink_leftover - $box_capacity
@@ -220,32 +270,41 @@ if $pink_leftover < 4 && $pink_leftover != 0
 puts "REFILL BOX"
   puts $pink_leftover.to_s + " pink replacement heads"
   $pink_leftover = 0
+  scheduling_dates
+  puts "Mail class: first"
 end
 end
 
 
-# generate_refill_boxes
+generate_refill_boxes
 
-# **Scheduling**
 
-# _As a Beam Shipping Manager_<br>
-# _In order to ship perks_<br>
-# _I want to schedule boxes for shipping_<br>
+# **Paste Kits**
 
-# Members should receive perks throughout the length of the contract (1 year).  The shipping date is based on the contract effective date of the primary insured family member.  Starter boxes should be scheduled on the contract effective date.  Refills are scheduled every 90 days after that for the remainder of the year. When boxes are generated then each box should have a line appended with its schedule.
+# _As a Beam shipping manager_<br>
+# _In order to ship paste kits_<br>
+# _I want to add paste kits to the boxes_<br>
+
+# When a brush or replacement head is shipped a paste kit is also shipped which contains toothpaste and floss. A paste kit weighs 7.6 oz which will impact on the mail class choice.
 
 # Example for a starter box:
 # ```
 # STARTER BOX
-# 2 green brushes
-# 2 green replacement head
+# 1 pink brushes
+# 1 pink replacement head
+# 1 paste kit
 # Schedule: 2018-01-01
+# Mail class: priority
 # ```
 
 # Example for a refill box:
 # ```
 # REFILL BOX
 # 1 pink replacement head
+# 1 paste kit
 # Schedule: 2018-04-01, 2018-06-30, 2018-09-28
+# Mail class: first
+# ```
+
 
 
