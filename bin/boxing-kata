@@ -27,6 +27,15 @@ data = CSV.read("../spec/fixtures/family_preferences.csv", { encoding: "UTF-8", 
 
 hashed_data = data.map { |d| d.to_hash }
 
+$contract_date = hashed_data.map {|x| x.values[4]}
+
+for i in $contract_date do 
+  if i != nil 
+    $primary_contract_date = i
+  end
+end
+puts $primary_contract_date.strftime("%Y-%m-%d")
+
 colors = hashed_data.map {|x| x.values[2]}
 
 $colors_frequency_hash = {}
@@ -48,13 +57,6 @@ $done1 = 1
 
 # **Starter boxes**
 
-# _As a Beam Shipping Manager_<br>
-# _In order to ship perks_<br>
-# _I want to fill starter boxes_<br>
-
-# Now that member data has been imported the shipping manager can begin filling boxes. A family should receive starter boxes with a brush and replacement brush head for each of their preferred colors. Each member will receive one brush and one replacement head. A starter box can contain a maximum of 2 brushes and 2 replacement heads in any combination of colors. When the shipping manager presses the starter boxes button then a number of boxes are output.  Using the brush preferences example above box output will be generated in the following format:
-#Print blue starter boxes
-
 def print_starter_boxes
 
 until $blue <= 2
@@ -62,33 +64,39 @@ until $blue <= 2
   puts "2 blue brushes"
   puts  "2 blue replacement heads"
   $blue -= 2
+  puts $primary_contract_date.strftime("%Y-%m-%d")
 end
 
 puts "STARTER BOX"
 puts $blue.to_s + " blue brushes"
 puts  $blue.to_s + " blue replacement heads"
+puts $primary_contract_date.strftime("%Y-%m-%d")
 
 until $green <= 2
   puts "STARTER BOX"
   puts "2 green brushes"
   puts  "2 green replacement heads"
   $green -= 2
+  puts $primary_contract_date.strftime("%Y-%m-%d")
 end
 
 puts "STARTER BOX"
 puts $green.to_s + " green brushes"
 puts  $green.to_s + " green replacement heads"
+puts $primary_contract_date.strftime("%Y-%m-%d")
 
 until $pink <= 2
   puts "STARTER BOX"
   puts "2 pink brushes"
   puts  "2 pink replacement heads"
   $pink -= 2
+  puts $primary_contract_date.strftime("%Y-%m-%d")
 end
 
 puts "STARTER BOX"
 puts $pink.to_s + " pink brushes"
 puts  $pink.to_s + " pink replacement heads"
+puts $primary_contract_date.strftime("%Y-%m-%d")
 
 $done1 = 1
 end
@@ -102,30 +110,13 @@ end
 
 # **Refills**
 
-# _Aa a Beam Shipping Manager_<br>
-# _In order to ship perks_<br>
-# _I want to fill refill boxes_<br>
-
-# A family should receive refill boxes with a replacement brush head for each of their preferred colors. A refill box can contain a maximum of 4 replacement heads. when the shipping manager presses the refill boxes button then a number of refill boxes are output.  Using the brush preferences example above box output will be generated in the following format:
-
-# ```
-# REFILL BOX
-# 2 blue replacement heads
-# 2 green replacement heads
-
-# REFILL BOX
-# 1 pink replacement head
-# ```
-
-# # If no starter boxes have been generated then output the message `PLEASE GENERATE STARTER BOXES FIRST`.
-
 $blue_replacement = $colors_frequency_hash["blue"]
 $pink_replacement = $colors_frequency_hash["pink"]
 $green_replacement = $colors_frequency_hash["green"]
 
 $replacement_colors = $blue_replacement.to_i + $pink_replacement.to_i + $green_replacement.to_i
 
-def check_for_starter_boxes 
+def generate_refill_boxes
   if $done1 == 0
   puts "PLEASE GENERATE STARTER BOXES FIRST"
   else 
@@ -168,12 +159,12 @@ def pack_multiple_refill_boxes
     $blue_replacement -= 4
   end
     $blue_leftover = $blue_replacement
-  
+if $leftovers != 0 
+      leftover_boxes
+    end
 end
 
 $leftovers = {blue: $blue_leftover, pink: $pink_leftover, green: $green_leftover}
-
-pack_multiple_refill_boxes
 
 def leftover_boxes
   
@@ -233,28 +224,28 @@ end
 end
 
 
-if $leftovers != 0 
-  leftover_boxes
-end
+# generate_refill_boxes
 
-**Scheduling**
+# **Scheduling**
 
-_As a Beam Shipping Manager_<br>
-_In order to ship perks_<br>
-_I want to schedule boxes for shipping_<br>
+# _As a Beam Shipping Manager_<br>
+# _In order to ship perks_<br>
+# _I want to schedule boxes for shipping_<br>
 
-Members should receive perks throughout the length of the contract (1 year).  The shipping date is based on the contract effective date of the primary insured family member.  Starter boxes should be scheduled on the contract effective date.  Refills are scheduled every 90 days after that for the remainder of the year. When boxes are generated then each box should have a line appended with its schedule.
+# Members should receive perks throughout the length of the contract (1 year).  The shipping date is based on the contract effective date of the primary insured family member.  Starter boxes should be scheduled on the contract effective date.  Refills are scheduled every 90 days after that for the remainder of the year. When boxes are generated then each box should have a line appended with its schedule.
 
-Example for a starter box:
-```
-STARTER BOX
-2 green brushes
-2 green replacement head
-Schedule: 2018-01-01
-```
+# Example for a starter box:
+# ```
+# STARTER BOX
+# 2 green brushes
+# 2 green replacement head
+# Schedule: 2018-01-01
+# ```
 
-Example for a refill box:
-```
-REFILL BOX
-1 pink replacement head
-Schedule: 2018-04-01, 2018-06-30, 2018-09-28
+# Example for a refill box:
+# ```
+# REFILL BOX
+# 1 pink replacement head
+# Schedule: 2018-04-01, 2018-06-30, 2018-09-28
+
+
