@@ -5,29 +5,26 @@ require "boxing/kata/boxing_kata"
 
 Boxing::Kata::report
 
-
-# **Importing family preferences**
-
-# _As a Beam Shipping Manager_<br>
-# _In order to ship perks_<br>
-# _I want to add family member brush preferences_<br>
-
-# To begin the boxing process the shipping manager must import family data.  When the system receives the input file then the brush color counts will be displayed in the format below.
-
-# ```
-# BRUSH PREFERENCES
-# blue: 2
-# green: 2
-# pink: 1
-
 require "csv" 
-require "json"  
+require "json" 
 
+ 
 data = CSV.read("../spec/fixtures/family_preferences.csv", { encoding: "UTF-8", headers: true, header_converters: :symbol, converters: :all})
 
 hashed_data = data.map { |d| d.to_hash }
-
 $contract_date = hashed_data.map {|x| x.values[4]}
+colors = hashed_data.map {|x| x.values[2]}
+$colors_frequency_hash = {}
+
+colors.each do |x|
+    count = colors.count(x)
+    $colors_frequency_hash[x] = count  
+  end
+
+$blue = $colors_frequency_hash["blue"]
+$pink = $colors_frequency_hash["pink"]
+$green = $colors_frequency_hash["green"]
+$done1 = 0
 
 for i in $contract_date do 
   if i != nil 
@@ -48,20 +45,6 @@ end
 $primary_contract_date -= 270
 end
 
-
-colors = hashed_data.map {|x| x.values[2]}
-
-$colors_frequency_hash = {}
-
-colors.each do |x|
-    count = colors.count(x)
-    $colors_frequency_hash[x] = count  
-  end
-
-$blue = $colors_frequency_hash["blue"]
-$pink = $colors_frequency_hash["pink"]
-$green = $colors_frequency_hash["green"]
-$done1 = 0
 
 def import_preferences
 p "BRUSH PREFERENCES"
@@ -91,11 +74,7 @@ puts $blue.to_s + " blue brushes"
 puts  $blue.to_s + " blue replacement heads"
 puts $blue.to_s + " paste kit(s)"
 puts $primary_contract_date.strftime("%Y-%m-%d")
-if $blue.to_i < 2
-  puts "Mail class: first"
-else
-  puts "Mail class: priority"
-end
+puts "Mail class: priority"
 
 until $green <= 2
   puts "STARTER BOX"
@@ -112,11 +91,7 @@ puts $green.to_s + " green brushes"
 puts  $green.to_s + " green replacement heads"
 puts $green.to_s + " paste kit(s)"
 puts $primary_contract_date.strftime("%Y-%m-%d")
-if $green.to_i < 2
-  puts "Mail class: first"
-else
-  puts "Mail class: priority"
-end
+puts "Mail class: priority"
 
 until $pink <= 2
   puts "STARTER BOX"
@@ -133,11 +108,7 @@ puts $pink.to_s + " pink brushes"
 puts  $pink.to_s + " pink replacement heads"
 puts $pink.to_s + " paste kit(s)"
 puts $primary_contract_date.strftime("%Y-%m-%d")
-if $pink.to_i < 2
-  puts "Mail class: first"
-else
-  puts "Mail class: priority"
-end
+puts "Mail class: priority"
 $done1 = 1
 end
 
@@ -217,11 +188,7 @@ end
 
 $leftovers = {blue: $blue_leftover, pink: $pink_leftover, green: $green_leftover}
 
-# YO. YOU ARE HERE
-# PASTE KITS WORKS FOR EVERYTHING BUT LEFTOVER BOXES 
-
 def leftover_boxes
-  
   $box_capacity  = 4
 
 
@@ -229,30 +196,46 @@ def leftover_boxes
     puts "REFILL BOX"
     puts $blue_leftover.to_s + " blue replacement heads"
     $box_capacity = $box_capacity - $blue_leftover
+    $blue_paste_kits = $blue_leftover
     $blue_leftover = 0
 
     if $leftovers != 0 && $box_capacity != 0 
         if $green_leftover < $box_capacity
           puts $green_leftover.to_s + " green replacement heads"
           $box_capacity = $box_capacity - $green_leftover
+          $green_paste_kits = $green_leftover
           $green_leftover = 0
           
           if $box_capacity != 0 
             if $pink_leftover < $box_capacity
               puts $pink_leftover.to_s + " pink replacement heads"
               $box_capacity = $box_capacity - $pink_leftover
-              $pink_leftover = 0
+              $pink_paste_kits = $pink_leftover
+              $total_paste_kits = $pink_paste_kits + $blue_paste_kits + $green_paste_kits
+              puts $total_paste_kits.to_s + " paste kit(s)"
               scheduling_dates
-              puts "Mail class: first"
+              if $total_paste_kits == 1
+                puts "Mail class: first"
+              else
+                puts "Mail class: priority"
+              end
+              $pink_leftover = 0
             end
           else 
+            puts $total_paste_kits.to_s + " paste kit(s)"
             leftover_boxes
           end
         else
           puts $box_capacity.to_s + " green replacement heads"
+          $blue_and_green_paste_kits = $blue_paste_kits + $box_capacity
+          puts $blue_and_green_paste_kits.to_s + " paste kit(s)"
           $green_leftover = $green_leftover - $box_capacity
           scheduling_dates
-          puts "Mail class: first"
+          if $blue_and_green_paste_kits == 1
+            puts "Mail class: first"
+          else
+            puts "Mail class: priority"
+          end
           leftover_boxes
         end
       end
@@ -263,62 +246,54 @@ def leftover_boxes
           puts $green_leftover.to_s + " green replacement heads"
           $box_capacity = $box_capacity - $green_leftover
           $green_leftover = 0
-          scheduling_dates
-          puts "Mail class: first"
+
           if $leftovers != 0 && $box_capacity != 0 
               if $pink_leftover < $box_capacity
                 puts $pink_leftover.to_s + " pink replacement heads"
+                $pink_and_green_paste_kits = $green_paste_kits + $box_capacity
+                puts $pink_and_green_paste_kits.to_s + " paste kit(s)"
                 $box_capacity = $box_capacity - $pink_leftover
-                $pink_leftover = 0
                 scheduling_dates
-                puts "Mail class: first"
+                if $pink_and_green_paste_kits == 1
+                  puts "Mail class: first"
+                else
+                  puts "Mail class: priority"
+                end
+                $pink_leftover = 0
               else 
                 puts $box_capacity.to_s + " pink replacement heads"
+                puts $total_paste_kits.to_s + " paste kit(s)"
+                if $total_paste_kits == 1
+                  puts "Mail class: first"
+                else
+                  puts "Mail class: priority"
+                end
                 $pink_leftover = $pink_leftover - $box_capacity
                 leftover_boxes
               end
             end
           end
-    
+
+          
+        
+          
+               
 if $pink_leftover < 4 && $pink_leftover != 0
-puts "REFILL BOX"
+  puts "REFILL BOX"
   puts $pink_leftover.to_s + " pink replacement heads"
-  $pink_leftover = 0
+  puts $pink_leftover.to_s + " paste kit(s)"
   scheduling_dates
-  puts "Mail class: first"
+  if $pink_leftover == 1
+    puts "Mail class: first"
+  else
+    puts "Mail class: priority"
+  end
+$pink_leftover = 0
 end
 end
 
 
 generate_refill_boxes
 
-
-# **Paste Kits**
-
-# _As a Beam shipping manager_<br>
-# _In order to ship paste kits_<br>
-# _I want to add paste kits to the boxes_<br>
-
-# When a brush or replacement head is shipped a paste kit is also shipped which contains toothpaste and floss. A paste kit weighs 7.6 oz which will impact on the mail class choice.
-
-# Example for a starter box:
-# ```
-# STARTER BOX
-# 1 pink brushes
-# 1 pink replacement head
-# 1 paste kit
-# Schedule: 2018-01-01
-# Mail class: priority
-# ```
-
-# Example for a refill box:
-# ```
-# REFILL BOX
-# 1 pink replacement head
-# 1 paste kit
-# Schedule: 2018-04-01, 2018-06-30, 2018-09-28
-# Mail class: first
-# ```
-
-
+#if more than one replacement head, priority
 
